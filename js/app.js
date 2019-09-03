@@ -53,12 +53,12 @@ function Interfaz() {
 }
 
 // Message that is printed in the HTML
-Interfaz.prototype.showError = function(message, type) {
+Interfaz.prototype.showMessage = function(message, type) {
   const div = document.createElement('div')
   if(type === 'error'){
     div.classList.add('message','error')
   } else {
-    div.classList = 'correct'
+    div.classList.add('message','correct')
   }
   div.innerHTML = `${message}`
   form.insertBefore(div, document.querySelector('.form-group'))
@@ -84,6 +84,24 @@ Interfaz.prototype.showResult = function(insurance, total) {
       break
   }
   console.log(brand)
+
+  // Create a div
+  const div = document.createElement('div')
+
+  // Insert information
+  div.innerHTML = `
+    <p class="header">Tu Resumen:</p>
+    <p>Marca: ${brand}</p>
+    <p>Year: ${insurance.year}</p>
+    <p>Type: ${insurance.type}</p>
+    <p>Total: ${total}</p>
+  `
+  const spinner = document.querySelector('#load img')
+  spinner.style.display = 'block'
+  setTimeout(function() {
+    spinner.style.display = 'none'
+    result.appendChild(div)
+  }, 2000)
 }
 
 //EventListeners
@@ -112,14 +130,21 @@ form.addEventListener('submit', function(e) {
 
   // Check that the fields are not empty
   if(selectBrand === '' || selectYear === '' || type === '') {
-    interfaz.showError('Faltan datos, revisa el formulario y pruba de nuevo', 'error')
+    interfaz.showMessage('Faltan datos, revisa el formulario y prueba de nuevo', 'error')
   } else {
+    // Clean previous results
+    const results = document.querySelector('#result div')
+    if(results != null) {
+      results.remove()
+    }
     // Request insurance and show interface
     const insurance = new Insurance(selectBrand, selectYear, type)
 
     // Quote the insurance
     const quantity = insurance.insuranceQuote()
+    // Show result
     interfaz.showResult(insurance, quantity)
+    interfaz.showMessage('Cotizando...', 'correct')
   }
 })
 
