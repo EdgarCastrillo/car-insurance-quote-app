@@ -6,6 +6,7 @@ class Insurance {
     this.year = year
     this.type = type
   }
+  
   // Quotation
   insuranceQuote() {
     // console.log(this.brand)
